@@ -53,6 +53,11 @@ Hangman.prototype.makeGuess = function(guess) {
     const isUniqueGuess = !this.guessedLetters.includes(guess);
     const isBadGuess = !this.word.includes(guess);
 
+    // do not accept new guesses if game is over
+    if (this.status !== 'playing') {
+        return;
+    }
+    
     // check if guessed letter is unique, if not, add letter to array
     if (isUniqueGuess) {
         this.guessedLetters.push(guess);
@@ -66,10 +71,23 @@ Hangman.prototype.makeGuess = function(guess) {
     this.calculateStatus();
 }
 
+Hangman.prototype.getStatusMessage = function() {
+    if (this.status === 'playing') {
+        return `Guesses Remaining: ${this.remainingGuesses}`;
+    }
+    
+    else if (this.status === 'failed') {
+        return `Nice try! The word was "${this.word.join('')}"`;
+    
+    } else {
+        return `Great job! You guessed the word!`;
+    }
+}
+
 function displayOutput(obj) {
     const puzzle = document.getElementById('puzzle');
     const guesses = document.getElementById('guesses');
 
     puzzle.textContent = obj.getPuzzle();
-    guesses.textContent = `Guesses Remaining: ${obj.remainingGuesses}`;
+    guesses.textContent = obj.getStatusMessage();
 }
