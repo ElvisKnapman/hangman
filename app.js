@@ -7,6 +7,4 @@ window.addEventListener('keypress', event => {
     console.log(game1.status);
 });
 
-
-
 displayOutput(game1);
