@@ -4,7 +4,32 @@ function Hangman(word, remainingGuesses) {
     this.word = word.toLowerCase().split('');
     this.remainingGuesses = remainingGuesses;
     this.guessedLetters = [];
+    this.status = 'playing';
 
+}
+
+Hangman.prototype.calculateStatus = function() {
+    // assume user has solved puzzle
+    let isFinished = true;
+
+    // checking guessedLetters array to see if user guessed all letters in word
+    for (let letter of this.word) {
+        if (this.guessedLetters.includes(letter)) {
+            continue;
+        } else {
+            // change to false if a puzzle letter has not been guessed
+            isFinished = false;
+            break;
+        }
+    }
+    
+    if (this.remainingGuesses === 0) {
+        this.status = 'failed';
+    } else if (isFinished) {
+        this.status = 'finished';
+    } else {
+        this.status = 'playing';
+    }
 }
 
 Hangman.prototype.getPuzzle = function() {
@@ -36,17 +61,15 @@ Hangman.prototype.makeGuess = function(guess) {
         // if word does not contain the guessed letter, subtract 1 guess
     if(isUniqueGuess && isBadGuess) {
             this.remainingGuesses--;
-    } 
+    }
+    
+    this.calculateStatus();
 }
 
+function displayOutput(obj) {
+    const puzzle = document.getElementById('puzzle');
+    const guesses = document.getElementById('guesses');
 
-const game1 = new Hangman('Cat', 2);
-console.log(game1.getPuzzle());
-console.log(game1.remainingGuesses);
-
-window.addEventListener('keypress', event => {
-    const guess = String.fromCharCode(event.charCode);
-    game1.makeGuess(guess);
-    console.log(game1.getPuzzle());
-    console.log(game1.remainingGuesses);
-});
+    puzzle.textContent = obj.getPuzzle();
+    guesses.textContent = `Guesses Remaining: ${obj.remainingGuesses}`;
+}
