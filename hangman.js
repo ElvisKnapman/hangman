@@ -9,17 +9,9 @@ class Hangman {
     }
 
     calculateStatus() {
-        // assume user has solved puzzle
-        let isFinished = true;
-
-        // checking guessedLetters array to see if user guessed all letters in word
-        for (let letter of this.word) {
-            if (!this.guessedLetters.includes(letter)) {
-                // change to false if a puzzle letter has not been guessed
-                isFinished = false;
-                break;
-            }
-        }
+        // checking to see if every letter is in guessedLetters array. If any letter from word isn't in the array, we return false.
+        // ==>> also, we handle an edge case where the puzzle has more than one word by accounting for the space without user having to guess it
+        let isFinished = this.word.every((letter) => this.guessedLetters.includes(letter) || letter === ' ');
         
         if (this.remainingGuesses === 0) {
             this.status = 'failed';
@@ -30,7 +22,7 @@ class Hangman {
         }
     }
 
-    getPuzzle() {
+    get puzzle() {
         let puzzle = '';
         // if current letter is in guessedLetters array, or is a space, reveal in output...
         this.word.forEach((letter) => {
@@ -62,14 +54,14 @@ class Hangman {
         }
 
         // if word does not contain the guessed letter, subtract 1 guess
-        if(isUniqueGuess && isBadGuess) {
+        if (isUniqueGuess && isBadGuess) {
                 this.remainingGuesses--;
         }
         
         this.calculateStatus();
     }
 
-    getStatusMessage() {
+    get statusMessage() {
         if (this.status === 'playing') {
             return `Guesses Remaining: ${this.remainingGuesses}`;
         }
@@ -88,6 +80,7 @@ function displayOutput(obj) {
     const puzzle = document.getElementById('puzzle');
     const guesses = document.getElementById('guesses');
 
-    puzzle.textContent = obj.getPuzzle();
-    guesses.textContent = obj.getStatusMessage();
+    // call getters
+    puzzle.textContent = obj.puzzle;
+    guesses.textContent = obj.statusMessage;
 }
